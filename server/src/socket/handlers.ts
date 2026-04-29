@@ -1,6 +1,6 @@
-import { Server, Socket } from 'socket.io';
-import { v4 as uuidv4 } from 'uuid';
-import { db } from '../data/mockDB';
+import { Server, Socket } from "socket.io";
+import { v4 as uuidv4 } from "uuid";
+import { db } from "../data/mockDB";
 import type {
   ServerToClientEvents,
   ClientToServerEvents,
@@ -8,8 +8,8 @@ import type {
   ForwardMessagePayload,
   TypingPayload,
   MarkReadPayload,
-} from '../types';
-import type { Message } from '../types';
+} from "../types";
+import type { Message } from "../types";
 
 type IO = Server<ClientToServerEvents, ServerToClientEvents>;
 type TypedSocket = Socket<ClientToServerEvents, ServerToClientEvents>;
@@ -25,7 +25,7 @@ export function registerSocketHandlers(io: IO, socket: TypedSocket): void {
   if (userId) {
     onlineUsers.set(userId, socket.id);
     db.setUserOnline(userId, true);
-    socket.broadcast.emit('user_online', { userId });
+    socket.broadcast.emit("user_online", { userId });
 
     for (const conv of db.getConversationsByUser(userId)) {
       socket.join(conv.id);
@@ -35,20 +35,20 @@ export function registerSocketHandlers(io: IO, socket: TypedSocket): void {
   }
 
   // ── join_room ──────────────────────────────────────────────────────────────
-  socket.on('join_room', ({ roomId }) => {
+  socket.on("join_room", ({ roomId }) => {
     socket.join(roomId);
-    io.to(roomId).emit('room_joined', { roomId, userId: userId ?? socket.id });
+    io.to(roomId).emit("room_joined", { roomId, userId: userId ?? socket.id });
     console.log(`[Socket] ${userName ?? userId} joined ${roomId}`);
   });
 
   // ── leave_room ─────────────────────────────────────────────────────────────
-  socket.on('leave_room', ({ roomId }) => {
+  socket.on("leave_room", ({ roomId }) => {
     socket.leave(roomId);
     console.log(`[Socket] ${userName ?? userId} left ${roomId}`);
   });
 
   // ── send_message ───────────────────────────────────────────────────────────
-  socket.on('send_message', (payload: SendMessagePayload) => {
+  socket.on("send_message", (payload: SendMessagePayload) => {
     const message: Message = {
       id: uuidv4(),
       roomId: payload.roomId,
@@ -66,16 +66,18 @@ export function registerSocketHandlers(io: IO, socket: TypedSocket): void {
 
     db.addMessage(message);
     db.updateConversationLastMessage(payload.roomId, message);
-    io.to(payload.roomId).emit('new_message', message);
+    io.to(payload.roomId).emit("new_message", message);
 
-    console.log(`[Socket] msg → ${payload.roomId}: "${payload.content.slice(0, 50)}"`);
+    console.log(
+      `[Socket] msg → ${payload.roomId}: "${payload.content.slice(0, 50)}"`,
+    );
   });
 
   // ── forward_message ────────────────────────────────────────────────────────
-  socket.on('forward_message', (payload: ForwardMessagePayload) => {
+  socket.on("forward_message", (payload: ForwardMessagePayload) => {
     const original = db.getMessageById(payload.messageId);
     if (!original) {
-      socket.emit('error', { message: 'Original message not found' });
+      socket.emit("error", { message: "Original message not found" });
       return;
     }
 
@@ -100,31 +102,33 @@ export function registerSocketHandlers(io: IO, socket: TypedSocket): void {
 
     db.addMessage(forwarded);
     db.updateConversationLastMessage(payload.toRoomId, forwarded);
-    io.to(payload.toRoomId).emit('message_forwarded', forwarded);
+    io.to(payload.toRoomId).emit("message_forwarded", forwarded);
 
-    console.log(`[Socket] forwarded ${payload.fromRoomId} → ${payload.toRoomId}`);
+    console.log(
+      `[Socket] forwarded ${payload.fromRoomId} → ${payload.toRoomId}`,
+    );
   });
 
   // ── typing_start / typing_stop ─────────────────────────────────────────────
-  socket.on('typing_start', (payload: TypingPayload) => {
-    socket.to(payload.roomId).emit('user_typing', payload);
+  socket.on("typing_start", (payload: TypingPayload) => {
+    socket.to(payload.roomId).emit("user_typing", payload);
   });
 
-  socket.on('typing_stop', (payload: TypingPayload) => {
-    socket.to(payload.roomId).emit('user_stopped_typing', payload);
+  socket.on("typing_stop", (payload: TypingPayload) => {
+    socket.to(payload.roomId).emit("user_stopped_typing", payload);
   });
 
   // ── mark_read ──────────────────────────────────────────────────────────────
-  socket.on('mark_read', (payload: MarkReadPayload) => {
+  socket.on("mark_read", (payload: MarkReadPayload) => {
     db.markMessagesRead(payload.roomId, payload.messageIds, payload.userId);
   });
 
   // ── disconnect ─────────────────────────────────────────────────────────────
-  socket.on('disconnect', () => {
+  socket.on("disconnect", () => {
     if (userId) {
       onlineUsers.delete(userId);
       db.setUserOnline(userId, false);
-      socket.broadcast.emit('user_offline', { userId });
+      socket.broadcast.emit("user_offline", { userId });
       console.log(`[Socket] ${userName ?? userId} disconnected`);
     }
   });

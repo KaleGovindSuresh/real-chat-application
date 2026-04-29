@@ -1,15 +1,15 @@
-import { Router } from 'express';
-import type { Request, Response } from 'express';
-import { db } from '../data/mockDB';
+import { Router } from "express";
+import type { Request, Response } from "express";
+import { db } from "../data/mockDB";
 
 const router = Router();
 
 // GET /api/conversations?userId=xxx
-router.get('/', (req: Request, res: Response) => {
+router.get("/", (req: Request, res: Response) => {
   const userId = req.query.userId as string | undefined;
 
   if (!userId) {
-    res.status(400).json({ message: 'userId query parameter is required' });
+    res.status(400).json({ message: "userId query parameter is required" });
     return;
   }
 

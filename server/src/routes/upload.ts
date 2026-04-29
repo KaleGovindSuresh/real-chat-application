@@ -1,15 +1,15 @@
-import { Router } from 'express';
-import type { Request, Response } from 'express';
-import fs from 'node:fs';
-import path from 'node:path';
-import multer from 'multer';
-import { randomUUID } from 'node:crypto';
-import { cloudinary } from '../config/cloudinary';
-import { config } from '../config/env';
-import type { UploadResponse } from '../types';
+import { Router } from "express";
+import type { Request, Response } from "express";
+import fs from "node:fs";
+import path from "node:path";
+import multer from "multer";
+import { randomUUID } from "node:crypto";
+import { cloudinary } from "../config/cloudinary";
+import { config } from "../config/env";
+import type { UploadResponse } from "../types";
 
 const router = Router();
-const localUploadDir = path.resolve(process.cwd(), 'uploads');
+const localUploadDir = path.resolve(process.cwd(), "uploads");
 
 function ensureUploadDir() {
   if (!fs.existsSync(localUploadDir)) {
@@ -18,7 +18,7 @@ function ensureUploadDir() {
 }
 
 function buildLocalUploadUrl(req: Request, filename: string) {
-  return `${req.protocol}://${req.get('host')}/uploads/${filename}`;
+  return `${req.protocol}://${req.get("host")}/uploads/${filename}`;
 }
 
 // Store file in memory (buffer) – Cloudinary handles persistence
@@ -31,15 +31,15 @@ const upload = multer({
     if (allowed.test(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(new Error('Only image and video files are allowed'));
+      cb(new Error("Only image and video files are allowed"));
     }
   },
 });
 
 // POST /api/upload
-router.post('/', upload.single('file'), async (req: Request, res: Response) => {
+router.post("/", upload.single("file"), async (req: Request, res: Response) => {
   if (!req.file) {
-    res.status(400).json({ message: 'No file uploaded' });
+    res.status(400).json({ message: "No file uploaded" });
     return;
   }
 
@@ -50,7 +50,9 @@ router.post('/', upload.single('file'), async (req: Request, res: Response) => {
 
   if (!cloudinaryConfigured) {
     ensureUploadDir();
-    const ext = path.extname(req.file.originalname) || `.${req.file.mimetype.split('/')[1] ?? 'bin'}`;
+    const ext =
+      path.extname(req.file.originalname) ||
+      `.${req.file.mimetype.split("/")[1] ?? "bin"}`;
     const filename = `${Date.now()}-${randomUUID()}${ext}`;
     const filepath = path.join(localUploadDir, filename);
     fs.writeFileSync(filepath, req.file.buffer);
@@ -58,8 +60,8 @@ router.post('/', upload.single('file'), async (req: Request, res: Response) => {
     const response: UploadResponse = {
       url: buildLocalUploadUrl(req, filename),
       publicId: filename,
-      resourceType: req.file.mimetype.startsWith('video') ? 'video' : 'image',
-      format: ext.replace(/^\./, ''),
+      resourceType: req.file.mimetype.startsWith("video") ? "video" : "image",
+      format: ext.replace(/^\./, ""),
       bytes: req.file.size,
     };
     res.json(response);
@@ -67,20 +69,25 @@ router.post('/', upload.single('file'), async (req: Request, res: Response) => {
   }
 
   // Upload buffer to Cloudinary
-  const resourceType = req.file.mimetype.startsWith('video') ? 'video' : 'image';
+  const resourceType = req.file.mimetype.startsWith("video")
+    ? "video"
+    : "image";
 
-  const result = await new Promise<{ secure_url: string; public_id: string; format: string; bytes: number }>(
-    (resolve, reject) => {
-      const stream = cloudinary.uploader.upload_stream(
-        { resource_type: resourceType, folder: 'realchat' },
-        (err, result) => {
-          if (err || !result) reject(err ?? new Error('Upload failed'));
-          else resolve(result);
-        },
-      );
-      stream.end(req.file!.buffer);
-    },
-  );
+  const result = await new Promise<{
+    secure_url: string;
+    public_id: string;
+    format: string;
+    bytes: number;
+  }>((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { resource_type: resourceType, folder: "realchat" },
+      (err, result) => {
+        if (err || !result) reject(err ?? new Error("Upload failed"));
+        else resolve(result);
+      },
+    );
+    stream.end(req.file!.buffer);
+  });
 
   const response: UploadResponse = {
     url: result.secure_url,

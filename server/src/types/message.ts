@@ -1,4 +1,4 @@
-export type MediaType = 'image' | 'video' | 'raw';
+export type MediaType = "image" | "video" | "raw";
 
 export interface Message {
   id: string;
@@ -7,7 +7,7 @@ export interface Message {
   senderName: string;
   senderAvatar?: string;
   content: string;
-  type: 'text' | 'image' | 'video';
+  type: "text" | "image" | "video";
   mediaUrl?: string;
   mediaType?: MediaType;
   isForwarded: boolean;
@@ -23,7 +23,7 @@ export interface SendMessagePayload {
   senderName: string;
   senderAvatar?: string;
   content: string;
-  type: 'text' | 'image' | 'video';
+  type: "text" | "image" | "video";
   mediaUrl?: string;
   mediaType?: MediaType;
 }

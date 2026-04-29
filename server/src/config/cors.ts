@@ -1,17 +1,17 @@
-import type { CorsOptions } from 'cors';
-import { config } from './env';
+import type { CorsOptions } from "cors";
+import { config } from "./env";
 
 function isLocalOrigin(origin: string): boolean {
   try {
     const { protocol, hostname } = new URL(origin);
-    if (protocol !== 'http:' && protocol !== 'https:') return false;
+    if (protocol !== "http:" && protocol !== "https:") return false;
     return (
-      hostname === 'localhost' ||
-      hostname === '127.0.0.1' ||
-      hostname === '0.0.0.0' ||
-      hostname === '::1' ||
-      hostname.startsWith('10.') ||
-      hostname.startsWith('192.168.') ||
+      hostname === "localhost" ||
+      hostname === "127.0.0.1" ||
+      hostname === "0.0.0.0" ||
+      hostname === "::1" ||
+      hostname.startsWith("10.") ||
+      hostname.startsWith("192.168.") ||
       /^172\.(1[6-9]|2\d|3[01])\./.test(hostname)
     );
   } catch {
@@ -28,7 +28,7 @@ export const corsOptions: CorsOptions = {
     }
     callback(new Error(`CORS: origin not allowed – ${origin}`), false);
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
 };

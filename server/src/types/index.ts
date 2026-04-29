@@ -33,7 +33,7 @@ export interface JwtPayload {
 export interface UploadResponse {
   url: string;
   publicId: string;
-  resourceType: 'image' | 'video' | 'raw';
+  resourceType: "image" | "video" | "raw";
   format: string;
   bytes: number;
 }
@@ -52,6 +52,6 @@ export type {
   TypingPayload,
   MarkReadPayload,
   MediaType,
-} from './message';
+} from "./message";
 
-export type { ServerToClientEvents, ClientToServerEvents } from './socket';
+export type { ServerToClientEvents, ClientToServerEvents } from "./socket";

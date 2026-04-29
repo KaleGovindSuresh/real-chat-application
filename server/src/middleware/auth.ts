@@ -1,7 +1,7 @@
-import type { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-import { config } from '../config/env';
-import type { JwtPayload } from '../types';
+import type { Request, Response, NextFunction } from "express";
+import jwt from "jsonwebtoken";
+import { config } from "../config/env";
+import type { JwtPayload } from "../types";
 
 declare global {
   namespace Express {
@@ -11,10 +11,14 @@ declare global {
   }
 }
 
-export function authenticate(req: Request, res: Response, next: NextFunction): void {
+export function authenticate(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): void {
   const header = req.headers.authorization;
-  if (!header?.startsWith('Bearer ')) {
-    res.status(401).json({ message: 'No token provided' });
+  if (!header?.startsWith("Bearer ")) {
+    res.status(401).json({ message: "No token provided" });
     return;
   }
 
@@ -24,6 +28,6 @@ export function authenticate(req: Request, res: Response, next: NextFunction): v
     req.user = decoded;
     next();
   } catch {
-    res.status(401).json({ message: 'Invalid or expired token' });
+    res.status(401).json({ message: "Invalid or expired token" });
   }
 }

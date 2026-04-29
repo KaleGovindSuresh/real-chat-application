@@ -11,7 +11,13 @@
     "lint": "eslint src --ext .ts",
     "typecheck": "tsc --noEmit"
   },
-  "keywords": ["chat", "websocket", "socket.io", "express", "realtime"],
+  "keywords": [
+    "chat",
+    "websocket",
+    "socket.io",
+    "express",
+    "realtime"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {

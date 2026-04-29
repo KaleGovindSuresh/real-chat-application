@@ -4,7 +4,7 @@ import type {
   ForwardMessagePayload,
   TypingPayload,
   MarkReadPayload,
-} from './message';
+} from "./message";
 
 export interface ServerToClientEvents {
   new_message: (msg: Message) => void;
