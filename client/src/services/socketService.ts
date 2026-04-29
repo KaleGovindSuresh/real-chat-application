@@ -2,6 +2,7 @@
 import { io } from 'socket.io-client';
 import type { Socket } from 'socket.io-client';
 import type { ServerToClientEvents, ClientToServerEvents } from '../types';
+import { getSocketUrl } from '../config/runtime';
 
 type AppSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
 
@@ -11,7 +12,7 @@ class SocketService {
   connect(userId: string, userName: string): AppSocket {
     if (this.socket?.connected) return this.socket;
 
-    const url = import.meta.env.VITE_SOCKET_URL || import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
+    const url = getSocketUrl();
 
     this.socket = io(url, {
       auth: { userId, userName },

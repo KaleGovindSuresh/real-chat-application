@@ -1,9 +1,10 @@
 // src/services/apiClient.ts
 import axios from 'axios';
 import { store } from '../app/store';
+import { getApiBaseUrl } from '../config/runtime';
 
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000',
+  baseURL: getApiBaseUrl(),
   headers: { 'Content-Type': 'application/json' },
   timeout: 10_000,
 });

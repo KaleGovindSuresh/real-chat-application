@@ -25,16 +25,7 @@ export default function ToastContainer() {
   const dispatch = useAppDispatch();
 
   return (
-    <div style={{
-      position: 'fixed',
-      top: 20,
-      right: 20,
-      zIndex: 9999,
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 10,
-      maxWidth: 380,
-    }}>
+    <div className="toast-stack" aria-live="polite" aria-atomic="true">
       <AnimatePresence mode="popLayout">
         {toasts.map((toast) => {
           const Icon = iconMap[toast.type];

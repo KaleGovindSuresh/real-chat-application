@@ -5,7 +5,8 @@ import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { socketService } from '../services/socketService';
 import { addMessage } from '../features/messages/messagesSlice';
 import { updateLastMessage, setUserOnline } from '../features/conversations/conversationsSlice';
-import { setTypingUser, removeTypingUser, addToast } from '../features/ui/uiSlice';
+import { setTypingUser, removeTypingUser } from '../features/ui/uiSlice';
+import { showErrorToast, showInfoToast } from '../utils/toast';
 import type { AppDispatch } from '../app/store';
 import type { Message, TypingPayload, ServerToClientEvents, ClientToServerEvents } from '../types';
 
@@ -50,14 +51,7 @@ function attach(socket: AppSocket, dispatch: AppDispatch) {
 
   socket.on('message_forwarded', (msg: Message) => {
     syncMessage(msg);
-    dispatch(
-      addToast({
-        id: `fwd-${msg.id}`,
-        message: `Message forwarded by ${msg.senderName}`,
-        type: 'info',
-        duration: 3000,
-      }),
-    );
+    showInfoToast(`Message forwarded by ${msg.senderName}`, 3000);
   });
 
   socket.on('user_typing', (payload: TypingPayload) => {
@@ -72,9 +66,7 @@ function attach(socket: AppSocket, dispatch: AppDispatch) {
   socket.on('user_offline', ({ userId }) => dispatch(setUserOnline({ userId, isOnline: false })));
 
   socket.on('error', ({ message }) => {
-    dispatch(
-      addToast({ id: `err-${Date.now()}`, message, type: 'error', duration: 4000 }),
-    );
+    showErrorToast(message, 4000);
   });
 }
 
