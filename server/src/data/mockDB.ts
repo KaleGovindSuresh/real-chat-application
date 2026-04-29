@@ -31,7 +31,7 @@ export interface DBConversation {
 //  Seed data ─
 
 const HASHED_PW =
-  "$2a$10$XOPbrlUPQdwdJUpSrIF6X.LbE14qsM7z7ELPljITPr1BKXR4DVXW6"; // password123
+  "$2a$10$dvpw.6pUhUWem3ZS.oxzceyHhQK/Dwt6vnoGePtALASVFyMvTpDuO"; // password123
 
 const users: DBUser[] = [
   {
