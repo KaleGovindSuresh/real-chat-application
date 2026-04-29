@@ -54,11 +54,13 @@ export default function MessageList({ roomId }: Props) {
   const groups = groupByDate(messages);
 
   return (
-    <div
+      <div
       ref={ref}
+      className="message-list"
       style={{
         flex: 1, overflowY: 'auto', padding: '20px 24px',
         display: 'flex', flexDirection: 'column',
+        minHeight: 0,
       }}
     >
       {messages.length === 0 && (

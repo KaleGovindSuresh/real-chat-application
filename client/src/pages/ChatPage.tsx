@@ -12,6 +12,7 @@ import {
   closestCenter,
 } from '@dnd-kit/core';
 import { useAppDispatch } from '../app/hooks';
+import { useIsMobile } from '../hooks/useIsMobile';
 import { openForwardModal } from '../features/ui/uiSlice';
 import Sidebar from '../components/sidebar/Sidebar';
 import ChatWindow from '../components/chat/ChatWindow';
@@ -23,6 +24,7 @@ import type { Message } from '../types';
 export default function ChatPage() {
   const dispatch = useAppDispatch();
   const [activeItem, setActiveItem] = useState<Active | null>(null);
+  const isMobile = useIsMobile();
 
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: { distance: 8 },
@@ -62,12 +64,18 @@ export default function ChatPage() {
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      <div style={{
-        display: 'flex', height: '100vh', width: '100vw',
-        overflow: 'hidden', background: 'var(--bg-primary)',
-      }}>
+      <div
+        className={isMobile ? 'chat-shell chat-shell--mobile' : 'chat-shell'}
+        style={{
+          display: 'flex',
+          height: '100dvh',
+          width: '100%',
+          overflow: 'hidden',
+          background: 'var(--bg-primary)',
+        }}
+      >
         <Sidebar />
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        <div className="chat-main-panel" style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', minWidth: 0 }}>
           <ChatWindow />
         </div>
       </div>

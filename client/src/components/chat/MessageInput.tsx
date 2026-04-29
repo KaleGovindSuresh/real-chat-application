@@ -5,8 +5,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useDraft } from '../../hooks/useDraft';
 import { useMediaUpload } from '../../hooks/useMediaUpload';
 import { useSocket } from '../../hooks/useSocket';
+import { useIsMobile } from '../../hooks/useIsMobile';
 import { ACCEPTED_MEDIA_TYPES, MAX_FILE_SIZE, TYPING_TIMEOUT_MS } from '../../utils/constants';
 import { FiSend, FiPaperclip, FiX, FiSmile } from 'react-icons/fi';
+import { showErrorToast } from '../../utils/toast';
 
 interface Props {
   roomId: string;
@@ -17,6 +19,7 @@ export default function MessageInput({ roomId }: Props) {
   const { upload, clear, isUploading, progress, result, previewUrl, previewType } =
     useMediaUpload();
   const { sendMessage, startTyping, stopTyping } = useSocket();
+  const isMobile = useIsMobile();
 
   const [text, setText] = useState(draft);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -97,11 +100,11 @@ export default function MessageInput({ roomId }: Props) {
       if (!files?.length) return;
       const file = files[0];
       if (file.size > MAX_FILE_SIZE) {
-        alert('File size exceeds 10MB limit');
+        showErrorToast('File size exceeds 10MB limit');
         return;
       }
       if (!ACCEPTED_MEDIA_TYPES.includes(file.type)) {
-        alert('Unsupported media type');
+        showErrorToast('Unsupported media type');
         return;
       }
       await upload(file);
@@ -122,7 +125,7 @@ export default function MessageInput({ roomId }: Props) {
   const canSend = Boolean(text.trim() || result);
 
   return (
-    <div style={{ borderTop: '1px solid var(--border-primary)', background: 'var(--bg-secondary)' }}>
+    <div className="message-input-shell" style={{ borderTop: '1px solid var(--border-primary)', background: 'var(--bg-secondary)' }}>
       {/* Media preview */}
       <AnimatePresence>
         {(previewUrl || isUploading) && (
@@ -130,7 +133,7 @@ export default function MessageInput({ roomId }: Props) {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            style={{ padding: '12px 20px', borderBottom: '1px solid var(--border-primary)' }}
+            style={{ padding: isMobile ? '10px 14px' : '12px 20px', borderBottom: '1px solid var(--border-primary)' }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               {previewUrl && (
@@ -175,14 +178,14 @@ export default function MessageInput({ roomId }: Props) {
       </AnimatePresence>
 
       {/* Input row */}
-      <form onSubmit={handleSend} style={{ display: 'flex', alignItems: 'flex-end', gap: 8, padding: '14px 20px' }}>
+      <form onSubmit={handleSend} className="message-input-form" style={{ display: 'flex', alignItems: 'flex-end', gap: 8, padding: isMobile ? '12px 12px calc(12px + env(safe-area-inset-bottom))' : '14px 20px' }}>
         {/* Single attach button */}
         <motion.button
           type="button"
           whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
           onClick={() => fileInputRef.current?.click()}
           title="Attach image or video"
-          style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', padding: 6, borderRadius: 'var(--radius-md)' }}
+          style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', padding: 6, borderRadius: 'var(--radius-md)', flexShrink: 0 }}
         >
           <FiPaperclip size={20} />
         </motion.button>
@@ -200,6 +203,7 @@ export default function MessageInput({ roomId }: Props) {
           flex: 1, background: 'var(--bg-input)', borderRadius: 'var(--radius-lg)',
           border: '1px solid var(--border-primary)', padding: '0 14px',
           display: 'flex', alignItems: 'center',
+          minWidth: 0,
         }}>
           <textarea
             id="message-input"
@@ -211,7 +215,7 @@ export default function MessageInput({ roomId }: Props) {
             style={{
               flex: 1, background: 'transparent', border: 'none', outline: 'none',
               padding: '12px 0', color: 'var(--text-primary)', fontSize: 14,
-              fontFamily: 'var(--font-family)', resize: 'none', maxHeight: 120, lineHeight: 1.5,
+              fontFamily: 'var(--font-family)', resize: 'none', maxHeight: isMobile ? 96 : 120, lineHeight: 1.5,
             }}
           />
           <button

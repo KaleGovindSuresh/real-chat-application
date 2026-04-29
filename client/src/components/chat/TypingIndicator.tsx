@@ -3,12 +3,14 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppSelector } from '../../app/hooks';
 import Avatar from '../ui/Avatar';
+import { useIsMobile } from '../../hooks/useIsMobile';
 
 interface Props {
   roomId: string;
 }
 
 export default function TypingIndicator({ roomId }: Props) {
+  const isMobile = useIsMobile();
   const typingUsers = useAppSelector((state) => state.ui.typingUsers[roomId] || []);
   const currentUser = useAppSelector((state) => state.auth.user);
 
@@ -23,7 +25,7 @@ export default function TypingIndicator({ roomId }: Props) {
           exit={{ opacity: 0, y: 10, height: 0 }}
           style={{
             display: 'flex', alignItems: 'center', gap: 8,
-            padding: '4px 16px 8px',
+            padding: isMobile ? '4px 4px 8px' : '4px 16px 8px',
           }}
         >
           <Avatar name={othersTyping[0].userName} size={24} />
@@ -40,7 +42,7 @@ export default function TypingIndicator({ roomId }: Props) {
               <span />
             </div>
           </div>
-          <span style={{ fontSize: 11, color: 'var(--text-tertiary)' }}>
+          <span style={{ fontSize: 11, color: 'var(--text-tertiary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
             {othersTyping.map((t) => t.userName).join(', ')}
           </span>
         </motion.div>

@@ -1,8 +1,10 @@
 // src/components/chat/ChatWindow.tsx
 import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAppSelector } from '../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { useSocket } from '../../hooks/useSocket';
+import { useIsMobile } from '../../hooks/useIsMobile';
+import { setSidebarOpen } from '../../features/ui/uiSlice';
 import ChatHeader from './ChatHeader';
 import MessageList from './MessageList';
 import MessageInput from './MessageInput';
@@ -10,8 +12,11 @@ import DropZone from '../media/DropZone';
 import { FiMessageCircle, FiArrowLeft } from 'react-icons/fi';
 
 export default function ChatWindow() {
+  const dispatch = useAppDispatch();
   const activeId = useAppSelector((state) => state.conversations.activeConversationId);
+  const isSidebarOpen = useAppSelector((state) => state.ui.isSidebarOpen);
   const { joinRoom } = useSocket();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (activeId) joinRoom(activeId);
@@ -19,7 +24,7 @@ export default function ChatWindow() {
 
   if (!activeId) {
     return (
-      <div style={{
+      <div className="chat-empty-state" style={{
         flex: 1, display: 'flex', flexDirection: 'column',
         alignItems: 'center', justifyContent: 'center',
         background: 'var(--bg-primary)', position: 'relative', overflow: 'hidden',
@@ -53,14 +58,24 @@ export default function ChatWindow() {
           <p style={{ color: 'var(--text-secondary)', fontSize: 15, maxWidth: 360, lineHeight: 1.6 }}>
             Select a conversation from the sidebar to start messaging in real-time
           </p>
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: 8,
-            marginTop: 24, justifyContent: 'center',
-            color: 'var(--text-tertiary)', fontSize: 13,
-          }}>
-            <FiArrowLeft size={14} />
-            <span>Choose a chat to begin</span>
-          </div>
+          {(!isMobile || isSidebarOpen) ? (
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: 8,
+              marginTop: 24, justifyContent: 'center',
+              color: 'var(--text-tertiary)', fontSize: 13,
+            }}>
+              <FiArrowLeft size={14} />
+              <span>Choose a chat to begin</span>
+            </div>
+          ) : (
+            <button
+              type="button"
+              className="chat-empty-action"
+              onClick={() => dispatch(setSidebarOpen(true))}
+            >
+              Open conversations
+            </button>
+          )}
         </motion.div>
       </div>
     );
@@ -77,7 +92,7 @@ export default function ChatWindow() {
           transition={{ duration: 0.2 }}
           style={{
             flex: 1, display: 'flex', flexDirection: 'column',
-            height: '100%', background: 'var(--bg-primary)',
+            height: '100%', background: 'var(--bg-primary)', minHeight: 0,
           }}
         >
           <ChatHeader />

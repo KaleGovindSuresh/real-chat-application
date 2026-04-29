@@ -5,13 +5,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import { setConversations, setActiveConversation } from '../../features/conversations/conversationsSlice';
 import { setMessages, setLoading } from '../../features/messages/messagesSlice';
+import { setSidebarOpen } from '../../features/ui/uiSlice';
 import apiClient from '../../services/apiClient';
 import Avatar from '../ui/Avatar';
 import { formatTime } from '../../utils/formatTime';
-import { FiSearch, FiLogOut, FiMessageCircle, FiEdit } from 'react-icons/fi';
+import { FiSearch, FiLogOut, FiMessageCircle, FiEdit, FiX } from 'react-icons/fi';
 import { logout } from '../../features/auth/authSlice';
 import type { Conversation } from '../../types';
 import { useDroppable } from '@dnd-kit/core';
+import { useIsMobile } from '../../hooks/useIsMobile';
 
 function ConversationDropTarget({ conv, isActive, onClick, currentUserId }: {
   conv: Conversation; isActive: boolean; onClick: () => void; currentUserId: string;
@@ -95,7 +97,9 @@ export default function Sidebar() {
   const user = useAppSelector((state) => state.auth.user);
   const conversations = useAppSelector((state) => state.conversations.list);
   const activeId = useAppSelector((state) => state.conversations.activeConversationId);
+  const isSidebarOpen = useAppSelector((state) => state.ui.isSidebarOpen);
   const [search, setSearch] = useState('');
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (!user) return;
@@ -112,6 +116,9 @@ export default function Sidebar() {
 
   const handleSelectConversation = async (conv: Conversation) => {
     dispatch(setActiveConversation(conv.id));
+    if (isMobile) {
+      dispatch(setSidebarOpen(false));
+    }
     dispatch(setLoading(true));
     try {
       const res = await apiClient.get(`/api/messages/${conv.id}`);
@@ -138,13 +145,31 @@ export default function Sidebar() {
   });
 
   return (
-    <div style={{
-      width: 340, height: '100%', display: 'flex', flexDirection: 'column',
-      background: 'var(--bg-secondary)', borderRight: '1px solid var(--border-primary)',
-    }}>
+    <>
+      {isMobile && isSidebarOpen ? (
+        <div
+          className="chat-sidebar-backdrop"
+          onClick={() => dispatch(setSidebarOpen(false))}
+        />
+      ) : null}
+      <aside
+        className={
+          isMobile
+            ? `chat-sidebar chat-sidebar--mobile ${isSidebarOpen ? 'chat-sidebar--open' : ''}`
+            : 'chat-sidebar'
+        }
+        style={{
+          width: isMobile ? 'min(88vw, 360px)' : 340,
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          background: 'var(--bg-secondary)',
+          borderRight: '1px solid var(--border-primary)',
+        }}
+      >
       {/* Header */}
       <div style={{
-        padding: '20px 20px 16px', borderBottom: '1px solid var(--border-primary)',
+        padding: isMobile ? '16px 16px 14px' : '20px 20px 16px', borderBottom: '1px solid var(--border-primary)',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -157,19 +182,35 @@ export default function Sidebar() {
             </div>
             <span style={{ fontSize: 20, fontWeight: 700 }} className="gradient-text">RealChat</span>
           </div>
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={() => dispatch(logout())}
-            style={{
-              background: 'var(--bg-hover)', border: 'none', borderRadius: 'var(--radius-md)',
-              width: 36, height: 36, cursor: 'pointer', display: 'flex',
-              alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)',
-            }}
-            title="Logout"
-          >
-            <FiLogOut size={16} />
-          </motion.button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            {isMobile ? (
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                onClick={() => dispatch(setSidebarOpen(false))}
+                style={{
+                  background: 'var(--bg-hover)', border: 'none', borderRadius: 'var(--radius-md)',
+                  width: 36, height: 36, cursor: 'pointer', display: 'flex',
+                  alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)',
+                }}
+                title="Close sidebar"
+              >
+                <FiX size={16} />
+              </motion.button>
+            ) : null}
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={() => dispatch(logout())}
+              style={{
+                background: 'var(--bg-hover)', border: 'none', borderRadius: 'var(--radius-md)',
+                width: 36, height: 36, cursor: 'pointer', display: 'flex',
+                alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)',
+              }}
+              title="Logout"
+            >
+              <FiLogOut size={16} />
+            </motion.button>
+          </div>
         </div>
 
         {/* Search */}
@@ -196,7 +237,7 @@ export default function Sidebar() {
       {/* User info bar */}
       {user && (
         <div style={{
-          padding: '12px 20px', borderBottom: '1px solid var(--border-primary)',
+          padding: isMobile ? '12px 16px' : '12px 20px', borderBottom: '1px solid var(--border-primary)',
           display: 'flex', alignItems: 'center', gap: 10,
         }}>
           <Avatar src={user.avatar} name={user.username} size={32} isOnline={true} />
@@ -208,7 +249,7 @@ export default function Sidebar() {
       )}
 
       {/* Conversation list */}
-      <div style={{ flex: 1, overflowY: 'auto', padding: '8px 8px' }}>
+      <div style={{ flex: 1, overflowY: 'auto', padding: isMobile ? '8px' : '8px 8px', minHeight: 0 }}>
         <AnimatePresence>
           {sorted.map((conv) => (
             <ConversationDropTarget
@@ -229,6 +270,7 @@ export default function Sidebar() {
           </div>
         )}
       </div>
-    </div>
+      </aside>
+    </>
   );
 }

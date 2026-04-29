@@ -7,6 +7,7 @@ import { formatMessageTime } from '../../utils/formatTime';
 import Avatar from '../ui/Avatar';
 import { FiCornerUpRight } from 'react-icons/fi';
 import type { Message } from '../../types';
+import { useIsMobile } from '../../hooks/useIsMobile';
 
 interface Props {
   message: Message;
@@ -15,6 +16,7 @@ interface Props {
 }
 
 export default function MessageItem({ message, isOwn, showAvatar }: Props) {
+  const isMobile = useIsMobile();
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: `msg-${message.id}`,
     data: { type: 'message', message },
@@ -29,8 +31,8 @@ export default function MessageItem({ message, isOwn, showAvatar }: Props) {
     alignItems: 'flex-end',
     gap: 8,
     marginBottom: showAvatar ? 12 : 4,
-    paddingLeft: isOwn ? 60 : 0,
-    paddingRight: isOwn ? 0 : 60,
+    paddingLeft: isOwn ? (isMobile ? 24 : 60) : 0,
+    paddingRight: isOwn ? 0 : (isMobile ? 24 : 60),
   };
 
   return (
@@ -52,7 +54,7 @@ export default function MessageItem({ message, isOwn, showAvatar }: Props) {
 
       {/* Bubble */}
       <div style={{
-        maxWidth: '70%',
+        maxWidth: isMobile ? '84%' : '70%',
         position: 'relative',
       }}>
         {/* Forwarded badge */}
@@ -107,7 +109,7 @@ export default function MessageItem({ message, isOwn, showAvatar }: Props) {
               alt="Shared image"
               style={{
                 maxWidth: '100%',
-                maxHeight: 300,
+                maxHeight: isMobile ? 220 : 300,
                 borderRadius: isOwn ? '12px 12px 0 12px' : '12px 12px 12px 0',
                 display: 'block',
               }}
@@ -120,7 +122,7 @@ export default function MessageItem({ message, isOwn, showAvatar }: Props) {
               controls
               style={{
                 maxWidth: '100%',
-                maxHeight: 300,
+                maxHeight: isMobile ? 220 : 300,
                 borderRadius: isOwn ? '12px 12px 0 12px' : '12px 12px 12px 0',
                 display: 'block',
               }}

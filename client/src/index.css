@@ -425,6 +425,39 @@ input, textarea {
   font-weight: 700;
 }
 
+.chat-shell {
+  position: relative;
+  min-height: 100dvh;
+}
+
+.chat-main-panel {
+  position: relative;
+}
+
+.chat-sidebar {
+  flex-shrink: 0;
+  min-width: 0;
+}
+
+.chat-empty-state {
+  padding: 24px;
+}
+
+.chat-empty-action {
+  margin-top: 24px;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #6366f1, #14b8a6);
+  color: #fff;
+  font-weight: 700;
+}
+
+.message-input-shell {
+  flex-shrink: 0;
+}
+
 /* Toast */
 .toast-stack {
   position: fixed;
@@ -487,6 +520,65 @@ input, textarea {
     right: 12px;
     left: 12px;
     width: auto;
+  }
+
+  .message-list {
+    padding: 14px 12px !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .chat-shell--mobile {
+    display: block;
+  }
+
+  .chat-main-panel {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .chat-sidebar {
+    box-shadow: none;
+  }
+
+  .chat-sidebar--mobile {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 40;
+    transform: translateX(-100%);
+    transition: transform var(--transition-normal);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
+  }
+
+  .chat-sidebar--mobile.chat-sidebar--open {
+    transform: translateX(0);
+  }
+
+  .chat-sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    background: rgba(3, 8, 20, 0.66);
+    backdrop-filter: blur(3px);
+  }
+
+  .chat-empty-state {
+    padding: 20px 16px;
+  }
+
+  .message-input-form {
+    gap: 6px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1100px) {
+  .chat-sidebar {
+    width: 300px !important;
+  }
+
+  .message-list {
+    padding: 18px 18px !important;
   }
 }
 

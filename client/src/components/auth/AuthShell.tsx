@@ -4,7 +4,7 @@ import { FiArrowRight, FiMessageCircle } from 'react-icons/fi';
 
 interface AuthShellProps {
   title: string;
-  subtitle: string;
+  subtitle?: string;
   switchLabel: string;
   switchText: string;
   onSwitch: () => void;

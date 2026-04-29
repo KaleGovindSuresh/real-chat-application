@@ -55,7 +55,6 @@ export default function RegisterPage({ onSwitchToLogin }: Props) {
   return (
     <AuthShell
       title="Create Account"
-      subtitle="Start chatting with a cleaner auth flow and responsive UI."
       switchLabel="Already have an account?"
       switchText="Sign in"
       onSwitch={() => {
