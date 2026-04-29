@@ -6,12 +6,14 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
 import path from 'node:path';
+import type { Request, Response } from 'express';
 
 import { config } from './config/env';
 import { corsOptions } from './config/cors';
 import { requestLogger } from './middleware/logger';
 import { errorHandler } from './middleware/errorHandler';
 import apiRoutes from './routes/index';
+import healthRoutes from './routes/health';
 import { registerSocketHandlers } from './socket/handlers';
 
 import type { ServerToClientEvents, ClientToServerEvents } from './types';
@@ -38,8 +40,21 @@ if (config.nodeEnv !== 'test') {
   app.use(requestLogger);
 }
 
+app.get('/', (_req: Request, res: Response) => {
+  res.json({
+    name: 'RealChat API',
+    status: 'ok',
+    docs: {
+      health: '/health',
+      apiHealth: '/api/health',
+    },
+    timestamp: new Date().toISOString(),
+  });
+});
+
 app.use('/uploads', express.static(path.resolve(process.cwd(), 'uploads')));
 
+app.use('/health', healthRoutes);
 app.use('/api', apiRoutes);
 
 // 404 fallback
