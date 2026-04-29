@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { getApiBaseUrl } from '../../config/runtime';
+import axios from "axios";
+import { getApiBaseUrl } from "../../config/runtime";
 
 interface AuthErrorResponse {
   message?: string;

@@ -2,12 +2,12 @@
 // Uploads via server /api/upload endpoint (server handles Cloudinary credentials).
 // Falls back to direct Cloudinary upload if VITE_CLOUDINARY_CLOUD_NAME is set.
 
-import type { CloudinaryResponse } from '../types';
-import apiClient from './apiClient';
+import type { CloudinaryResponse } from "../types";
+import apiClient from "./apiClient";
 
-export function getMediaType(file: File): 'image' | 'video' {
-  if (file.type.startsWith('video/')) return 'video';
-  return 'image';
+export function getMediaType(file: File): "image" | "video" {
+  if (file.type.startsWith("video/")) return "video";
+  return "image";
 }
 
 function hasValidDirectCloudinaryConfig() {
@@ -15,7 +15,10 @@ function hasValidDirectCloudinaryConfig() {
   const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET?.trim();
 
   if (!cloudName || !uploadPreset) return false;
-  if (cloudName === 'your_cloud_name' || uploadPreset === 'your_unsigned_preset') {
+  if (
+    cloudName === "your_cloud_name" ||
+    uploadPreset === "your_unsigned_preset"
+  ) {
     return false;
   }
 
@@ -29,16 +32,20 @@ export async function uploadViaServer(
   onProgress?: (pct: number) => void,
 ): Promise<CloudinaryResponse> {
   const formData = new FormData();
-  formData.append('file', file);
+  formData.append("file", file);
 
-  const response = await apiClient.post<CloudinaryResponse>('/api/upload', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
-    onUploadProgress(event) {
-      if (event.total && onProgress) {
-        onProgress(Math.round((event.loaded / event.total) * 100));
-      }
+  const response = await apiClient.post<CloudinaryResponse>(
+    "/api/upload",
+    formData,
+    {
+      headers: { "Content-Type": "multipart/form-data" },
+      onUploadProgress(event) {
+        if (event.total && onProgress) {
+          onProgress(Math.round((event.loaded / event.total) * 100));
+        }
+      },
     },
-  });
+  );
 
   // Normalise: server returns { url, publicId, resourceType, ... }
   // but we expose the Cloudinary-shaped object downstream
@@ -53,7 +60,7 @@ export async function uploadViaServer(
   return {
     secure_url: raw.url ?? (response.data as CloudinaryResponse).secure_url,
     public_id: raw.publicId ?? (response.data as CloudinaryResponse).public_id,
-    resource_type: (raw.resourceType ?? 'image') as 'image' | 'video' | 'raw',
+    resource_type: (raw.resourceType ?? "image") as "image" | "video" | "raw",
     format: raw.format,
     bytes: raw.bytes,
     original_filename: file.name,
@@ -70,18 +77,18 @@ export async function uploadDirectToCloudinary(
   const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
   if (!hasValidDirectCloudinaryConfig() || !cloudName || !uploadPreset) {
-    throw new Error('Cloudinary env vars not set; use uploadViaServer instead');
+    throw new Error("Cloudinary env vars not set; use uploadViaServer instead");
   }
 
   const url = `https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`;
   const formData = new FormData();
-  formData.append('file', file);
-  formData.append('upload_preset', uploadPreset);
-  formData.append('folder', 'realchat');
+  formData.append("file", file);
+  formData.append("upload_preset", uploadPreset);
+  formData.append("folder", "realchat");
 
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', url);
+    xhr.open("POST", url);
 
     xhr.upload.onprogress = (e) => {
       if (e.lengthComputable && onProgress) {
@@ -97,7 +104,7 @@ export async function uploadDirectToCloudinary(
       }
     };
 
-    xhr.onerror = () => reject(new Error('Network error during upload'));
+    xhr.onerror = () => reject(new Error("Network error during upload"));
     xhr.send(formData);
   });
 }

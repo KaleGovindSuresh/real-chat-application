@@ -1,10 +1,16 @@
 // Toast notification component
 
-import { useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useAppSelector, useAppDispatch } from '../../app/hooks';
-import { removeToast } from '../../features/ui/uiSlice';
-import { FiCheckCircle, FiAlertCircle, FiInfo, FiAlertTriangle, FiX } from 'react-icons/fi';
+import { useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useAppSelector, useAppDispatch } from "../../app/hooks";
+import { removeToast } from "../../features/ui/uiSlice";
+import {
+  FiCheckCircle,
+  FiAlertCircle,
+  FiInfo,
+  FiAlertTriangle,
+  FiX,
+} from "react-icons/fi";
 
 const iconMap = {
   success: FiCheckCircle,
@@ -14,10 +20,10 @@ const iconMap = {
 };
 
 const colorMap = {
-  success: '#10b981',
-  error: '#ef4444',
-  info: '#3b82f6',
-  warning: '#f59e0b',
+  success: "#10b981",
+  error: "#ef4444",
+  info: "#3b82f6",
+  warning: "#f59e0b",
 };
 
 export default function ToastContainer() {
@@ -72,25 +78,31 @@ function ToastItem({
       initial={{ opacity: 0, x: 100, scale: 0.9 }}
       animate={{ opacity: 1, x: 0, scale: 1 }}
       exit={{ opacity: 0, x: 100, scale: 0.9 }}
-      transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+      transition={{ type: "spring", stiffness: 400, damping: 30 }}
       style={{
-        background: 'var(--bg-tertiary)',
+        background: "var(--bg-tertiary)",
         border: `1px solid ${colorMap[type as keyof typeof colorMap]}33`,
         borderLeft: `3px solid ${colorMap[type as keyof typeof colorMap]}`,
-        borderRadius: 'var(--radius-md)',
-        padding: '12px 16px',
-        display: 'flex',
-        alignItems: 'center',
+        borderRadius: "var(--radius-md)",
+        padding: "12px 16px",
+        display: "flex",
+        alignItems: "center",
         gap: 12,
-        boxShadow: 'var(--shadow-lg)',
-        backdropFilter: 'blur(12px)',
-        cursor: 'pointer',
+        boxShadow: "var(--shadow-lg)",
+        backdropFilter: "blur(12px)",
+        cursor: "pointer",
       }}
       onClick={onDismiss}
     >
       {icon}
-      <span style={{ flex: 1, fontSize: 14, color: 'var(--text-primary)' }}>{message}</span>
-      <FiX size={14} color="var(--text-tertiary)" style={{ cursor: 'pointer', flexShrink: 0 }} />
+      <span style={{ flex: 1, fontSize: 14, color: "var(--text-primary)" }}>
+        {message}
+      </span>
+      <FiX
+        size={14}
+        color="var(--text-tertiary)"
+        style={{ cursor: "pointer", flexShrink: 0 }}
+      />
     </motion.div>
   );
 }

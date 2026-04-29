@@ -1,11 +1,11 @@
 // src/features/ui/uiSlice.ts
-import { createSlice } from '@reduxjs/toolkit';
-import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
 
 export interface Toast {
   id: string;
   message: string;
-  type: 'success' | 'error' | 'info' | 'warning';
+  type: "success" | "error" | "info" | "warning";
   duration?: number;
 }
 
@@ -28,7 +28,7 @@ const initialState: UIState = {
 };
 
 const uiSlice = createSlice({
-  name: 'ui',
+  name: "ui",
   initialState,
   reducers: {
     openForwardModal(
@@ -61,7 +61,11 @@ const uiSlice = createSlice({
     },
     setTypingUser(
       state,
-      action: PayloadAction<{ roomId: string; userId: string; userName: string }>,
+      action: PayloadAction<{
+        roomId: string;
+        userId: string;
+        userName: string;
+      }>,
     ) {
       const { roomId, userId, userName } = action.payload;
       if (!state.typingUsers[roomId]) state.typingUsers[roomId] = [];
@@ -69,7 +73,10 @@ const uiSlice = createSlice({
         state.typingUsers[roomId].push({ userId, userName });
       }
     },
-    removeTypingUser(state, action: PayloadAction<{ roomId: string; userId: string }>) {
+    removeTypingUser(
+      state,
+      action: PayloadAction<{ roomId: string; userId: string }>,
+    ) {
       const { roomId, userId } = action.payload;
       if (state.typingUsers[roomId]) {
         state.typingUsers[roomId] = state.typingUsers[roomId].filter(

@@ -1,6 +1,6 @@
 // src/app/store.ts
 
-import { configureStore, combineReducers } from '@reduxjs/toolkit';
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import {
   persistStore,
   persistReducer,
@@ -10,15 +10,15 @@ import {
   PERSIST,
   PURGE,
   REGISTER,
-} from 'redux-persist';
+} from "redux-persist";
 
-import authReducer from '../features/auth/authSlice';
-import messagesReducer from '../features/messages/messagesSlice';
-import conversationsReducer from '../features/conversations/conversationsSlice';
-import draftsReducer from '../features/drafts/draftsSlice';
-import uploadReducer from '../features/upload/uploadSlice';
-import uiReducer from '../features/ui/uiSlice';
-import { localStorageAdapter } from './persistStorage';
+import authReducer from "../features/auth/authSlice";
+import messagesReducer from "../features/messages/messagesSlice";
+import conversationsReducer from "../features/conversations/conversationsSlice";
+import draftsReducer from "../features/drafts/draftsSlice";
+import uploadReducer from "../features/upload/uploadSlice";
+import uiReducer from "../features/ui/uiSlice";
+import { localStorageAdapter } from "./persistStorage";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -30,9 +30,9 @@ const rootReducer = combineReducers({
 });
 
 const persistConfig = {
-  key: 'realchat',
+  key: "realchat",
   storage: localStorageAdapter,
-  whitelist: ['auth', 'drafts'], // Only persist auth session + unsent drafts
+  whitelist: ["auth", "drafts"], // Only persist auth session + unsent drafts
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

@@ -5,7 +5,10 @@ interface SpinnerProps {
   color?: string;
 }
 
-export default function Spinner({ size = 24, color = 'var(--color-primary)' }: SpinnerProps) {
+export default function Spinner({
+  size = 24,
+  color = "var(--color-primary)",
+}: SpinnerProps) {
   return (
     <div
       aria-hidden="true"
@@ -14,8 +17,8 @@ export default function Spinner({ size = 24, color = 'var(--color-primary)' }: S
         height: size,
         border: `3px solid var(--border-primary)`,
         borderTopColor: color,
-        borderRadius: '50%',
-        animation: 'spinner-rotate 0.8s linear infinite',
+        borderRadius: "50%",
+        animation: "spinner-rotate 0.8s linear infinite",
       }}
     />
   );

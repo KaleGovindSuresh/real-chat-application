@@ -1,11 +1,11 @@
 // src/services/apiClient.ts
-import axios from 'axios';
-import { store } from '../app/store';
-import { getApiBaseUrl } from '../config/runtime';
+import axios from "axios";
+import { store } from "../app/store";
+import { getApiBaseUrl } from "../config/runtime";
 
 const apiClient = axios.create({
   baseURL: getApiBaseUrl(),
-  headers: { 'Content-Type': 'application/json' },
+  headers: { "Content-Type": "application/json" },
   timeout: 10_000,
 });
 
@@ -21,7 +21,7 @@ apiClient.interceptors.response.use(
   (res) => res,
   (err) => {
     if (err.response?.status === 401) {
-      console.warn('[API] 401 Unauthorized — token may have expired');
+      console.warn("[API] 401 Unauthorized — token may have expired");
     }
     return Promise.reject(err);
   },

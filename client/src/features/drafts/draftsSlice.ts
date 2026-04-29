@@ -1,11 +1,11 @@
 // src/features/drafts/draftsSlice.ts
-import { createSlice } from '@reduxjs/toolkit';
-import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
 
 type DraftsState = Record<string, string>; // roomId → text
 
 const draftsSlice = createSlice({
-  name: 'drafts',
+  name: "drafts",
   initialState: {} as DraftsState,
   reducers: {
     setDraft(state, action: PayloadAction<{ roomId: string; text: string }>) {

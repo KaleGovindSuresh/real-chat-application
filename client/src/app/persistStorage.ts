@@ -30,6 +30,6 @@ function createNoopStorage(): PersistStorage {
 }
 
 export const localStorageAdapter: PersistStorage =
-  typeof window !== 'undefined' && window.localStorage
+  typeof window !== "undefined" && window.localStorage
     ? createLocalStorage()
     : createNoopStorage();

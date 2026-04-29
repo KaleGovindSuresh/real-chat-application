@@ -1,7 +1,7 @@
 // src/features/conversations/conversationsSlice.ts
-import { createSlice } from '@reduxjs/toolkit';
-import type { PayloadAction } from '@reduxjs/toolkit';
-import type { Conversation, Participant, LastMessage } from '../../types';
+import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
+import type { Conversation, Participant, LastMessage } from "../../types";
 
 interface ConversationsState {
   list: Conversation[];
@@ -20,7 +20,7 @@ const initialState: ConversationsState = {
 };
 
 const conversationsSlice = createSlice({
-  name: 'conversations',
+  name: "conversations",
   initialState,
   reducers: {
     setConversations(state, action: PayloadAction<Conversation[]>) {
@@ -40,11 +40,16 @@ const conversationsSlice = createSlice({
         conv.updatedAt = action.payload.message.timestamp;
       }
     },
-    setUserOnline(state, action: PayloadAction<{ userId: string; isOnline: boolean }>) {
+    setUserOnline(
+      state,
+      action: PayloadAction<{ userId: string; isOnline: boolean }>,
+    ) {
       const { userId, isOnline } = action.payload;
       state.onlineUsers[userId] = isOnline;
       for (const conv of state.list) {
-        const p = conv.participantUsers?.find((p: Participant) => p.id === userId);
+        const p = conv.participantUsers?.find(
+          (p: Participant) => p.id === userId,
+        );
         if (p) p.isOnline = isOnline;
       }
     },

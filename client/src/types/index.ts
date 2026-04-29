@@ -8,8 +8,8 @@ export type {
   TypingPayload,
   MarkReadPayload,
   MediaType,
-} from './message';
-export type { ServerToClientEvents, ClientToServerEvents } from './socket';
+} from "./message";
+export type { ServerToClientEvents, ClientToServerEvents } from "./socket";
 
 // ─── User ─────────────────────────────────────────────────────────────────────
 
@@ -35,7 +35,7 @@ export interface LastMessage {
   senderId: string;
   senderName: string;
   timestamp: string;
-  type: 'text' | 'image' | 'video';
+  type: "text" | "image" | "video";
 }
 
 export interface Conversation {
@@ -53,7 +53,7 @@ export interface Conversation {
 export interface CloudinaryResponse {
   secure_url: string;
   public_id: string;
-  resource_type: 'image' | 'video' | 'raw';
+  resource_type: "image" | "video" | "raw";
   format: string;
   bytes: number;
   width?: number;

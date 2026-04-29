@@ -1,14 +1,22 @@
 // src/hooks/useSocket.ts
-import { useEffect, useCallback } from 'react';
-import type { Socket } from 'socket.io-client';
-import { useAppSelector, useAppDispatch } from '../app/hooks';
-import { socketService } from '../services/socketService';
-import { addMessage } from '../features/messages/messagesSlice';
-import { updateLastMessage, setUserOnline } from '../features/conversations/conversationsSlice';
-import { setTypingUser, removeTypingUser } from '../features/ui/uiSlice';
-import { showErrorToast, showInfoToast } from '../utils/toast';
-import type { AppDispatch } from '../app/store';
-import type { Message, TypingPayload, ServerToClientEvents, ClientToServerEvents } from '../types';
+import { useEffect, useCallback } from "react";
+import type { Socket } from "socket.io-client";
+import { useAppSelector, useAppDispatch } from "../app/hooks";
+import { socketService } from "../services/socketService";
+import { addMessage } from "../features/messages/messagesSlice";
+import {
+  updateLastMessage,
+  setUserOnline,
+} from "../features/conversations/conversationsSlice";
+import { setTypingUser, removeTypingUser } from "../features/ui/uiSlice";
+import { showErrorToast, showInfoToast } from "../utils/toast";
+import type { AppDispatch } from "../app/store";
+import type {
+  Message,
+  TypingPayload,
+  ServerToClientEvents,
+  ClientToServerEvents,
+} from "../types";
 
 type AppSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
 
@@ -18,13 +26,13 @@ let consumerCount = 0;
 let listenersAttached = false;
 
 function detach(socket: AppSocket) {
-  socket.off('new_message');
-  socket.off('message_forwarded');
-  socket.off('user_typing');
-  socket.off('user_stopped_typing');
-  socket.off('user_online');
-  socket.off('user_offline');
-  socket.off('error');
+  socket.off("new_message");
+  socket.off("message_forwarded");
+  socket.off("user_typing");
+  socket.off("user_stopped_typing");
+  socket.off("user_online");
+  socket.off("user_offline");
+  socket.off("error");
 }
 
 function attach(socket: AppSocket, dispatch: AppDispatch) {
@@ -47,25 +55,37 @@ function attach(socket: AppSocket, dispatch: AppDispatch) {
     );
   };
 
-  socket.on('new_message', syncMessage);
+  socket.on("new_message", syncMessage);
 
-  socket.on('message_forwarded', (msg: Message) => {
+  socket.on("message_forwarded", (msg: Message) => {
     syncMessage(msg);
     showInfoToast(`Message forwarded by ${msg.senderName}`, 3000);
   });
 
-  socket.on('user_typing', (payload: TypingPayload) => {
-    dispatch(setTypingUser({ roomId: payload.roomId, userId: payload.userId, userName: payload.userName }));
+  socket.on("user_typing", (payload: TypingPayload) => {
+    dispatch(
+      setTypingUser({
+        roomId: payload.roomId,
+        userId: payload.userId,
+        userName: payload.userName,
+      }),
+    );
   });
 
-  socket.on('user_stopped_typing', (payload: TypingPayload) => {
-    dispatch(removeTypingUser({ roomId: payload.roomId, userId: payload.userId }));
+  socket.on("user_stopped_typing", (payload: TypingPayload) => {
+    dispatch(
+      removeTypingUser({ roomId: payload.roomId, userId: payload.userId }),
+    );
   });
 
-  socket.on('user_online', ({ userId }) => dispatch(setUserOnline({ userId, isOnline: true })));
-  socket.on('user_offline', ({ userId }) => dispatch(setUserOnline({ userId, isOnline: false })));
+  socket.on("user_online", ({ userId }) =>
+    dispatch(setUserOnline({ userId, isOnline: true })),
+  );
+  socket.on("user_offline", ({ userId }) =>
+    dispatch(setUserOnline({ userId, isOnline: false })),
+  );
 
-  socket.on('error', ({ message }) => {
+  socket.on("error", ({ message }) => {
     showErrorToast(message, 4000);
   });
 }
@@ -113,12 +133,12 @@ export function useSocket() {
     (payload: {
       roomId: string;
       content: string;
-      type: 'text' | 'image' | 'video';
+      type: "text" | "image" | "video";
       mediaUrl?: string;
-      mediaType?: 'image' | 'video' | 'raw';
+      mediaType?: "image" | "video" | "raw";
     }) => {
       if (!user) return;
-      socketService.getSocket()?.emit('send_message', {
+      socketService.getSocket()?.emit("send_message", {
         ...payload,
         senderId: user.id,
         senderName: user.username,
@@ -129,13 +149,13 @@ export function useSocket() {
   );
 
   const joinRoom = useCallback((roomId: string) => {
-    socketService.getSocket()?.emit('join_room', { roomId });
+    socketService.getSocket()?.emit("join_room", { roomId });
   }, []);
 
   const forwardMessage = useCallback(
     (messageId: string, fromRoomId: string, toRoomId: string) => {
       if (!user) return;
-      socketService.getSocket()?.emit('forward_message', {
+      socketService.getSocket()?.emit("forward_message", {
         messageId,
         fromRoomId,
         toRoomId,
@@ -149,7 +169,7 @@ export function useSocket() {
   const startTyping = useCallback(
     (roomId: string) => {
       if (!user) return;
-      socketService.getSocket()?.emit('typing_start', {
+      socketService.getSocket()?.emit("typing_start", {
         roomId,
         userId: user.id,
         userName: user.username,
@@ -161,7 +181,7 @@ export function useSocket() {
   const stopTyping = useCallback(
     (roomId: string) => {
       if (!user) return;
-      socketService.getSocket()?.emit('typing_stop', {
+      socketService.getSocket()?.emit("typing_stop", {
         roomId,
         userId: user.id,
         userName: user.username,

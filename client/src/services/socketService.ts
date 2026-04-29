@@ -1,8 +1,8 @@
 // src/services/socketService.ts
-import { io } from 'socket.io-client';
-import type { Socket } from 'socket.io-client';
-import type { ServerToClientEvents, ClientToServerEvents } from '../types';
-import { getSocketUrl } from '../config/runtime';
+import { io } from "socket.io-client";
+import type { Socket } from "socket.io-client";
+import type { ServerToClientEvents, ClientToServerEvents } from "../types";
+import { getSocketUrl } from "../config/runtime";
 
 type AppSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
 
@@ -16,15 +16,21 @@ class SocketService {
 
     this.socket = io(url, {
       auth: { userId, userName },
-      transports: ['websocket', 'polling'],
+      transports: ["websocket", "polling"],
       reconnection: true,
       reconnectionAttempts: 5,
       reconnectionDelay: 1_000,
     }) as AppSocket;
 
-    this.socket.on('connect', () => console.log('[Socket] connected:', this.socket?.id));
-    this.socket.on('disconnect', (reason) => console.log('[Socket] disconnected:', reason));
-    this.socket.on('connect_error', (err) => console.error('[Socket] error:', err.message));
+    this.socket.on("connect", () =>
+      console.log("[Socket] connected:", this.socket?.id),
+    );
+    this.socket.on("disconnect", (reason) =>
+      console.log("[Socket] disconnected:", reason),
+    );
+    this.socket.on("connect_error", (err) =>
+      console.error("[Socket] error:", err.message),
+    );
 
     return this.socket;
   }

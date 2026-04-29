@@ -1,7 +1,7 @@
 // src/features/upload/uploadSlice.ts
-import { createSlice } from '@reduxjs/toolkit';
-import type { PayloadAction } from '@reduxjs/toolkit';
-import type { CloudinaryResponse } from '../../types';
+import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
+import type { CloudinaryResponse } from "../../types";
 
 interface UploadState {
   isUploading: boolean;
@@ -9,7 +9,7 @@ interface UploadState {
   error: string | null;
   result: CloudinaryResponse | null;
   previewUrl: string | null;
-  previewType: 'image' | 'video' | null;
+  previewType: "image" | "video" | null;
 }
 
 const initialState: UploadState = {
@@ -22,7 +22,7 @@ const initialState: UploadState = {
 };
 
 const uploadSlice = createSlice({
-  name: 'upload',
+  name: "upload",
   initialState,
   reducers: {
     uploadStart(state) {
@@ -43,7 +43,10 @@ const uploadSlice = createSlice({
       state.isUploading = false;
       state.error = action.payload;
     },
-    setPreview(state, action: PayloadAction<{ url: string; type: 'image' | 'video' }>) {
+    setPreview(
+      state,
+      action: PayloadAction<{ url: string; type: "image" | "video" }>,
+    ) {
       state.previewUrl = action.payload.url;
       state.previewType = action.payload.type;
     },

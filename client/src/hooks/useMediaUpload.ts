@@ -1,6 +1,6 @@
 // src/hooks/useMediaUpload.ts
-import { useCallback } from 'react';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { useCallback } from "react";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
 import {
   uploadStart,
   uploadProgress,
@@ -8,8 +8,8 @@ import {
   uploadFailure,
   setPreview,
   clearUpload,
-} from '../features/upload/uploadSlice';
-import { uploadMedia, getMediaType } from '../services/cloudinaryService';
+} from "../features/upload/uploadSlice";
+import { uploadMedia, getMediaType } from "../services/cloudinaryService";
 
 export function useMediaUpload() {
   const dispatch = useAppDispatch();
@@ -25,11 +25,13 @@ export function useMediaUpload() {
       dispatch(setPreview({ url: localUrl, type }));
 
       try {
-        const result = await uploadMedia(file, (pct) => dispatch(uploadProgress(pct)));
+        const result = await uploadMedia(file, (pct) =>
+          dispatch(uploadProgress(pct)),
+        );
         dispatch(uploadSuccess(result));
         return result;
       } catch (err) {
-        const msg = err instanceof Error ? err.message : 'Upload failed';
+        const msg = err instanceof Error ? err.message : "Upload failed";
         dispatch(uploadFailure(msg));
         throw err;
       }

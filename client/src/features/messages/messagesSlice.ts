@@ -1,7 +1,7 @@
 // src/features/messages/messagesSlice.ts
-import { createSlice } from '@reduxjs/toolkit';
-import type { PayloadAction } from '@reduxjs/toolkit';
-import type { Message } from '../../types';
+import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
+import type { Message } from "../../types";
 
 interface MessagesState {
   byRoomId: Record<string, Message[]>;
@@ -16,17 +16,22 @@ const initialState: MessagesState = {
 };
 
 const messagesSlice = createSlice({
-  name: 'messages',
+  name: "messages",
   initialState,
   reducers: {
-    setMessages(state, action: PayloadAction<{ roomId: string; messages: Message[] }>) {
+    setMessages(
+      state,
+      action: PayloadAction<{ roomId: string; messages: Message[] }>,
+    ) {
       state.byRoomId[action.payload.roomId] = action.payload.messages;
       state.isLoading = false;
     },
     addMessage(state, action: PayloadAction<Message>) {
       const { roomId } = action.payload;
       if (!state.byRoomId[roomId]) state.byRoomId[roomId] = [];
-      const exists = state.byRoomId[roomId].some((m) => m.id === action.payload.id);
+      const exists = state.byRoomId[roomId].some(
+        (m) => m.id === action.payload.id,
+      );
       if (!exists) state.byRoomId[roomId].push(action.payload);
     },
     setLoading(state, action: PayloadAction<boolean>) {
@@ -42,6 +47,11 @@ const messagesSlice = createSlice({
   },
 });
 
-export const { setMessages, addMessage, setLoading, setError, clearRoomMessages } =
-  messagesSlice.actions;
+export const {
+  setMessages,
+  addMessage,
+  setLoading,
+  setError,
+  clearRoomMessages,
+} = messagesSlice.actions;
 export default messagesSlice.reducer;

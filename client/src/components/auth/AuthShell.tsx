@@ -1,6 +1,6 @@
-import type { ReactNode } from 'react';
-import { motion } from 'framer-motion';
-import { FiArrowRight, FiMessageCircle } from 'react-icons/fi';
+import type { ReactNode } from "react";
+import { motion } from "framer-motion";
+import { FiArrowRight, FiMessageCircle } from "react-icons/fi";
 
 interface AuthShellProps {
   title: string;
@@ -39,7 +39,7 @@ export default function AuthShell({
           >
             <FiMessageCircle size={28} color="#fff" />
           </motion.div>
-          <span className="auth-eyebrow">Realtime Messaging</span>
+          <span className="auth-eyebrow">Real Chat</span>
           <h1 className="auth-title">{title}</h1>
           <p className="auth-subtitle">{subtitle}</p>
         </header>
@@ -48,7 +48,11 @@ export default function AuthShell({
 
         <div className="auth-switch">
           <span>{switchLabel}</span>
-          <button type="button" className="auth-switch__button" onClick={onSwitch}>
+          <button
+            type="button"
+            className="auth-switch__button"
+            onClick={onSwitch}
+          >
             <span>{switchText}</span>
             <FiArrowRight size={14} />
           </button>

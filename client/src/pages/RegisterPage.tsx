@@ -1,18 +1,34 @@
 // Register Page
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { FiArrowRight, FiEye, FiEyeOff, FiLock, FiMail, FiUser } from 'react-icons/fi';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { loginStart, loginSuccess, loginFailure, clearError } from '../features/auth/authSlice';
-import { getAuthErrorMessage } from '../features/auth/authFeedback';
-import { registerSchema } from '../features/auth/authSchemas';
-import apiClient from '../services/apiClient';
-import Button from '../components/ui/Button';
-import TextField from '../components/ui/TextField';
-import AuthShell from '../components/auth/AuthShell';
-import { showErrorToast, showSuccessToast, showWarningToast } from '../utils/toast';
-import type { RegisterFormValues } from '../features/auth/authSchemas';
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import {
+  FiArrowRight,
+  FiEye,
+  FiEyeOff,
+  FiLock,
+  FiMail,
+  FiUser,
+} from "react-icons/fi";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
+import {
+  loginStart,
+  loginSuccess,
+  loginFailure,
+  clearError,
+} from "../features/auth/authSlice";
+import { getAuthErrorMessage } from "../features/auth/authFeedback";
+import { registerSchema } from "../features/auth/authSchemas";
+import apiClient from "../services/apiClient";
+import Button from "../components/ui/Button";
+import TextField from "../components/ui/TextField";
+import AuthShell from "../components/auth/AuthShell";
+import {
+  showErrorToast,
+  showSuccessToast,
+  showWarningToast,
+} from "../utils/toast";
+import type { RegisterFormValues } from "../features/auth/authSchemas";
 
 interface Props {
   onSwitchToLogin: () => void;
@@ -28,29 +44,32 @@ export default function RegisterPage({ onSwitchToLogin }: Props) {
     register,
   } = useForm<RegisterFormValues>({
     defaultValues: {
-      username: '',
-      email: '',
-      password: '',
+      username: "",
+      email: "",
+      password: "",
     },
-    mode: 'onBlur',
+    mode: "onBlur",
     resolver: yupResolver(registerSchema),
   });
 
-  const onSubmit = handleSubmit(async (values) => {
-    dispatch(loginStart());
-    try {
-      const res = await apiClient.post('/api/auth/register', values);
-      dispatch(loginSuccess({ user: res.data.user, token: res.data.token }));
-      showSuccessToast(`Account created for ${res.data.user.username}`);
-    } catch (err: unknown) {
-      const message = getAuthErrorMessage(err, 'Registration failed');
-      dispatch(loginFailure(message));
-      showErrorToast(message);
-    }
-  }, (invalid) => {
-    const firstError = Object.values(invalid)[0]?.message;
-    if (firstError) showWarningToast(firstError);
-  });
+  const onSubmit = handleSubmit(
+    async (values) => {
+      dispatch(loginStart());
+      try {
+        const res = await apiClient.post("/api/auth/register", values);
+        dispatch(loginSuccess({ user: res.data.user, token: res.data.token }));
+        showSuccessToast(`Account created for ${res.data.user.username}`);
+      } catch (err: unknown) {
+        const message = getAuthErrorMessage(err, "Registration failed");
+        dispatch(loginFailure(message));
+        showErrorToast(message);
+      }
+    },
+    (invalid) => {
+      const firstError = Object.values(invalid)[0]?.message;
+      if (firstError) showWarningToast(firstError);
+    },
+  );
 
   return (
     <AuthShell
@@ -71,7 +90,7 @@ export default function RegisterPage({ onSwitchToLogin }: Props) {
           autoComplete="username"
           leftIcon={<FiUser size={16} />}
           error={errors.username?.message}
-          {...register('username', {
+          {...register("username", {
             onChange: () => dispatch(clearError()),
           })}
         />
@@ -84,25 +103,25 @@ export default function RegisterPage({ onSwitchToLogin }: Props) {
           autoComplete="email"
           leftIcon={<FiMail size={16} />}
           error={errors.email?.message}
-          {...register('email', {
+          {...register("email", {
             onChange: () => dispatch(clearError()),
           })}
         />
 
         <TextField
           id="register-password"
-          type={showPassword ? 'text' : 'password'}
+          type={showPassword ? "text" : "password"}
           label="Password"
           placeholder="Create a password"
           autoComplete="new-password"
           leftIcon={<FiLock size={16} />}
           error={errors.password?.message}
           rightAction={{
-            ariaLabel: showPassword ? 'Hide password' : 'Show password',
+            ariaLabel: showPassword ? "Hide password" : "Show password",
             icon: showPassword ? <FiEyeOff size={16} /> : <FiEye size={16} />,
             onClick: () => setShowPassword((value) => !value),
           }}
-          {...register('password', {
+          {...register("password", {
             onChange: () => dispatch(clearError()),
           })}
         />
