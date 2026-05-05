@@ -39,13 +39,15 @@ export default function MessageList({ roomId }: Props) {
   );
   const isLoading = useAppSelector((state) => state.messages.isLoading);
   const currentUser = useAppSelector((state) => state.auth.user);
-  const { ref, scrollToBottom } = useScrollToBottom<HTMLDivElement>([
-    messages.length,
-  ]);
+  const { ref, scrollToBottom } = useScrollToBottom<HTMLDivElement>();
 
   useEffect(() => {
     scrollToBottom(false);
-  }, [roomId]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [roomId, scrollToBottom]);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages.length, scrollToBottom]);
 
   if (isLoading) {
     return (

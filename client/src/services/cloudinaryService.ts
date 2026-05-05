@@ -1,6 +1,6 @@
 // src/services/cloudinaryService.ts
 // Uploads via server /api/upload endpoint (server handles Cloudinary credentials).
-// Falls back to direct Cloudinary upload if VITE_CLOUDINARY_CLOUD_NAME is set.
+// Falls back to direct Cloudinary upload if NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME is set.
 
 import type { CloudinaryResponse } from "../types";
 import apiClient from "./apiClient";
@@ -11,8 +11,8 @@ export function getMediaType(file: File): "image" | "video" {
 }
 
 function hasValidDirectCloudinaryConfig() {
-  const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME?.trim();
-  const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET?.trim();
+  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME?.trim();
+  const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET?.trim();
 
   if (!cloudName || !uploadPreset) return false;
   if (
@@ -73,8 +73,8 @@ export async function uploadDirectToCloudinary(
   file: File,
   onProgress?: (pct: number) => void,
 ): Promise<CloudinaryResponse> {
-  const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-  const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+  const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
 
   if (!hasValidDirectCloudinaryConfig() || !cloudName || !uploadPreset) {
     throw new Error("Cloudinary env vars not set; use uploadViaServer instead");

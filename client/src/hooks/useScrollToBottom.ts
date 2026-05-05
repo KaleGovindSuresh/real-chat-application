@@ -1,7 +1,6 @@
-// src/hooks/useScrollToBottom.ts
 import { useEffect, useRef, useCallback } from "react";
 
-export function useScrollToBottom<T extends HTMLElement>(deps: unknown[] = []) {
+export function useScrollToBottom<T extends HTMLElement>() {
   const ref = useRef<T>(null);
   const isAtBottomRef = useRef(true);
 
@@ -24,11 +23,6 @@ export function useScrollToBottom<T extends HTMLElement>(deps: unknown[] = []) {
     el.addEventListener("scroll", onScroll);
     return () => el.removeEventListener("scroll", onScroll);
   }, []);
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => {
-    if (isAtBottomRef.current) scrollToBottom();
-  }, deps);
 
   return { ref, scrollToBottom };
 }

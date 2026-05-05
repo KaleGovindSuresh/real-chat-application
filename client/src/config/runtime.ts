@@ -5,7 +5,7 @@ function isLocalHost(hostname: string) {
 }
 
 export function getApiBaseUrl() {
-  const configuredUrl = import.meta.env.VITE_API_BASE_URL?.trim();
+  const configuredUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.trim();
   if (configuredUrl) return configuredUrl;
 
   if (typeof window !== "undefined" && isLocalHost(window.location.hostname)) {
@@ -16,6 +16,6 @@ export function getApiBaseUrl() {
 }
 
 export function getSocketUrl() {
-  const configuredSocketUrl = import.meta.env.VITE_SOCKET_URL?.trim();
+  const configuredSocketUrl = process.env.NEXT_PUBLIC_SOCKET_URL?.trim();
   return configuredSocketUrl || getApiBaseUrl();
 }
